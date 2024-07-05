@@ -102,7 +102,7 @@ function AddToString(inputString, symbolsCount, symbol){
 // console.log('qwerty', 4, '0');
 // AddToString('qwerty', 4, '0');
 
-function CheckLength(inputString, maxLength){
+function CheckLength(inputString = 10, maxLength){
 
   const stringLength = inputString.length;
 
@@ -113,3 +113,4 @@ function CheckLength(inputString, maxLength){
   return false;
 
 }
+
