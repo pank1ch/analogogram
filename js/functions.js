@@ -1,7 +1,5 @@
 function IsPalindrom (inputString) {
 
-
-  console.log(inputString);
   inputString = inputString.replaceAll(' ', '');
   inputString = inputString.toLowerCase();
   let resultString = '';
