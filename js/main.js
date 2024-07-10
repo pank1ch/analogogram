@@ -1,3 +1,1 @@
-import { createTemporaryImages } from './data.js';
-
-console.log(createTemporaryImages());
+import './image-rendering.js';
