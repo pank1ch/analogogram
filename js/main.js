@@ -1,1 +1,3 @@
-import './image-rendering.js';
+import './gallery.js';
+
+
