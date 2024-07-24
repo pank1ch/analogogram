@@ -67,7 +67,7 @@ const createImage = () =>({
   url: `photos/${ getUniqueUrlId() }.jpg`,
   description: DESCRIPTIONS[getRandomNumberInRange(0, DESCRIPTIONS.length - 1)],
   likes: getRandomNumberInRange(15,200),
-  comments: Array.from({length: getRandomNumberInRange(2,6)}, createComment)
+  comments: Array.from({length: getRandomNumberInRange(2,14)}, createComment)
 
 });
 
