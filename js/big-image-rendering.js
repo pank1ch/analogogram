@@ -1,4 +1,5 @@
-import {imagesContainer, images} from './thumbnail-rendering.js';
+
+const imagesContainer = document.querySelector('.pictures');
 
 const pageBody = document.body;
 const bigPicture = document.querySelector('.big-picture');
@@ -14,52 +15,47 @@ const commentLoadButton = bigPicture.querySelector('.comments-loader');
 let imageComments = [];
 
 
-imagesContainer.addEventListener('click', (evt) =>{
+function setUserThumbnailsClick(imagesData){
+
+  imagesContainer.addEventListener('click', (evt) =>{
+
+    if (evt.target.matches('.picture__img')){
+
+      const imageObject = imagesData.find((image) => image.id === Number(evt.target.dataset.id));
 
 
-  if (evt.target.matches('.picture__img')){
 
-    const imageObject = images.find((image) => image.id === Number(evt.target.dataset.id));
+      const pictureImg = bigPicture.querySelector('.big-picture__img').children[0];
+      pictureImg.src = imageObject.url;
 
-    bigPicture.classList.remove('hidden');
-    pageBody.classList.add('modal-open');
+      const likesCount = bigPicture.querySelector('.likes-count');
+      likesCount.textContent = imageObject.likes;
 
-    const pictureImg = bigPicture.querySelector('.big-picture__img').children[0];
-    pictureImg.src = imageObject.url;
+      const pictureDescription = bigPicture.querySelector('.social__caption');
+      pictureDescription.textContent = imageObject.description;
 
-    const likesCount = bigPicture.querySelector('.likes-count');
-    likesCount.textContent = imageObject.likes;
+      commentLoadButton.classList.remove('hidden');
 
+      allCommentsCountField.textContent = imageObject.comments.length;
 
-    commentLoadButton.classList.remove('hidden');
+      commentsContainer.innerHTML = '';
 
+      currentCommentsCountField.textContent = '';
 
-    allCommentsCountField.textContent = imageObject.comments.length;
-
-    commentsContainer.innerHTML = '';
-
-    currentCommentsCountField.textContent = '';
-
-    imageComments = imageObject.comments.slice();
+      imageComments = imageObject.comments.slice();
 
 
-    commentsLoad(imageComments);
+      commentsLoad(imageComments);
 
+      window.addEventListener('keydown', toggleEscButton);
 
-    const pictureDescription = bigPicture.querySelector('.social__caption');
-    pictureDescription.textContent = imageObject.description;
+      bigPicture.classList.remove('hidden');
+      pageBody.classList.add('modal-open');
 
+    }
 
-    window.addEventListener('keydown', toggleEscButton);
-
-    // console.log(evt.target.dataset.id);
-    // const foundImage = images.find((image) => image.id === Number(evt.target.dataset.id));
-    // // const foundImage = images.find((image) => image.id === evt.target.dataset.id);
-    // console.log(foundImage);
-  }
-
-
-});
+  });
+}
 
 function commentsLoad(){
 
@@ -142,7 +138,8 @@ function toggleEscButton(evt){
     pageBody.classList.remove('modal-open');
     OnimageClose();
 
-
   }
 
 }
+
+export {setUserThumbnailsClick};
