@@ -1,15 +1,13 @@
-import {createTemporaryImages} from './data.js';
 
-const images = createTemporaryImages();
 const imagesContainer = document.querySelector('.pictures');
 
 const templateContent = document.querySelector('#picture').content;
 const imageTemplate = templateContent.querySelector('.picture');
 
-const imagesFragment = document.createDocumentFragment();
 
-function ThumbnailsRendering(){
+function ThumbnailsRendering(images){
 
+  const imagesFragment = document.createDocumentFragment();
   images.forEach(({id, url, description, likes, comments}) => {
 
     const thumbnailCopy = imageTemplate.cloneNode(true);
@@ -33,5 +31,5 @@ function ThumbnailsRendering(){
 
 }
 
-export {ThumbnailsRendering, imagesContainer, images};
+export {ThumbnailsRendering };
 

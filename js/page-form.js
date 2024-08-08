@@ -1,4 +1,5 @@
-
+import { sendData } from './api.js';
+import { showMessageBlock } from './util.js';
 const pageBody = document.body;
 
 const pageForm = document.querySelector('.img-upload__form');
@@ -6,9 +7,8 @@ const formOverlay = document.querySelector('.img-upload__overlay');
 const formOverlayPicture = formOverlay.querySelector('.img-upload__preview').children[0];
 
 const formCloseButton = formOverlay.querySelector('.img-upload__cancel');
-
+const formSubmitButton = formOverlay.querySelector('.img-upload__submit');
 const fileInput = document.querySelector('.img-upload__input');
-
 
 const hashtagInput = document.querySelector('.text__hashtags');
 const descriptionInput = document.querySelector('.text__description');
@@ -22,6 +22,15 @@ const formSlider = sliderContainer.querySelector('.effect-level__slider');
 const sliderInput = sliderContainer.querySelector('.effect-level__value');
 const radioButtons = Array.from(document.querySelectorAll('.effects__radio'));
 const noEffectButton = document.querySelector('#effect-none');
+
+const successTemplateContent = document.querySelector('#success').content;
+const errorTemplateContent = document.querySelector('#error').content;
+
+
+const SubmitButtonText = {
+  IDLE: 'Опубликовать',
+  SENDING: 'Опубликовываю...'
+};
 
 const EFFECTS = [
   { name: 'none',
@@ -83,41 +92,46 @@ fileInput.addEventListener('change', (evt) =>{
   window.addEventListener('keydown', toggleEscButton);
 });
 
-formCloseButton.addEventListener('click', () => {
 
-  OnFormClose();
-});
-
-
-function OnFormClose(){
-
-  fileInput.value = '';
+const clearForm = () => {
   hashtagInput.value = '';
   descriptionInput.value = '';
-  formOverlay.classList.add('hidden');
+
   noEffectButton.checked = 'true';
   formOverlayPicture.className = '';
   formOverlayPicture.style.filter = 'none';
   formOverlayPicture.style.transform = 'scale(1)';
+  scaleInput.value = '100%';
+};
+
+
+function closeUserForm(){
+
+  fileInput.value = '';
+  formOverlay.classList.add('hidden');
   pageBody.classList.remove('modal-open');
   window.removeEventListener('keydown', toggleEscButton);
+
 
 }
 
 
 function toggleEscButton(evt){
-
-
   if (evt.key === 'Escape'){
 
     if ((document.activeElement !== hashtagInput) && (document.activeElement !== descriptionInput)){
 
-      OnFormClose();
+      clearForm();
+      closeUserForm();
     }
-
   }
-
 }
+
+formCloseButton.addEventListener('click', () => {
+
+  clearForm();
+  closeUserForm();
+});
 
 const pristine = new Pristine(
   pageForm,
@@ -128,16 +142,6 @@ const pristine = new Pristine(
     errorTextClass: 'text__description--invalid'
   }
 );
-
-pageForm.addEventListener('submit', (evt) => {
-
-
-  if (pristine.validate() === false){
-    evt.preventDefault();
-  }
-
-
-});
 
 
 function validateHashtag(value){
@@ -160,8 +164,6 @@ function validateHashtag(value){
 
   hashtagsArray = value.toLowerCase().split(' ').filter((hashtag) => hashtag !== '');
 
-
-  console.log(hashtagsArray);
 
   for (let i = 0; i < hashtagsArray.length; i++){
     if (hashtagRegex.test(hashtagsArray[i]) === false){
@@ -199,6 +201,43 @@ pristine.addValidator(
   'Длина комментария не может составлять больше 140 символов'
 );
 
+const blockSubmitButton = () => {
+  formSubmitButton.disabled = true;
+  formSubmitButton.textContent = SubmitButtonText.SENDING;
+};
+
+const unblockSubmitButton = () => {
+  formSubmitButton.disabled = false;
+  formSubmitButton.textContent = SubmitButtonText.IDLE;
+};
+
+
+pageForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  const isValid = pristine.validate();
+  if (isValid){
+
+    blockSubmitButton();
+    const formData = new FormData(pageForm);
+
+    sendData(formData)
+      .then(() => {
+
+        clearForm();
+        closeUserForm();
+        showMessageBlock(successTemplateContent);
+      })
+      .catch(() => {
+        closeUserForm();
+        showMessageBlock(errorTemplateContent);
+      })
+      .finally(unblockSubmitButton);
+
+  }
+
+});
+
 
 //---------------------------------SCALE---------------------------------------//
 
@@ -211,7 +250,7 @@ function zoomOut(){
     scaleInput.value = `${inputValue - 25 }%`;
   }
   changeScale();
-};
+}
 
 scaleSmallerControl.addEventListener('click', zoomOut);
 
@@ -224,7 +263,7 @@ function zoomIn(){
     scaleInput.value = `${inputValue + 25 }%`;
   }
   changeScale();
-};
+}
 
 scaleBiggerControl.addEventListener('click', zoomIn);
 
@@ -264,8 +303,7 @@ function changeEffect(evt){
     formOverlayPicture.style.filter = 'none';
     sliderContainer.style.display = 'none';
     formSlider.setAttribute('disabled', true);
-  }
-  else{
+  } else{
     sliderContainer.style.display = 'block';
     formSlider.removeAttribute('disabled', true);
   }
