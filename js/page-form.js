@@ -26,6 +26,7 @@ const noEffectButton = document.querySelector('#effect-none');
 const successTemplateContent = document.querySelector('#success').content;
 const errorTemplateContent = document.querySelector('#error').content;
 
+const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 
 const SubmitButtonText = {
   IDLE: 'Опубликовать',
@@ -82,14 +83,20 @@ const noEffect = EFFECTS[0];
 fileInput.addEventListener('change', (evt) =>{
 
   const userImage = evt.target.files[0];
-  const userImageURL = URL.createObjectURL(userImage);
+  const userImageName = userImage.name.toLowerCase();
 
-  formOverlayPicture.src = userImageURL;
+  const typeMatches = FILE_TYPES.some((it) => userImageName.endsWith(it));
 
-  formOverlay.classList.remove('hidden');
-  pageBody.classList.add('modal-open');
+  if (typeMatches){
+    const userImageURL = URL.createObjectURL(userImage);
+    formOverlayPicture.src = userImageURL;
 
-  window.addEventListener('keydown', toggleEscButton);
+    formOverlay.classList.remove('hidden');
+    pageBody.classList.add('modal-open');
+
+    window.addEventListener('keydown', toggleEscButton);
+  }
+
 });
 
 
@@ -98,6 +105,8 @@ const clearForm = () => {
   descriptionInput.value = '';
 
   noEffectButton.checked = 'true';
+  sliderContainer.style.display = 'none';
+  formSlider.setAttribute('disabled', true);
   formOverlayPicture.className = '';
   formOverlayPicture.style.filter = 'none';
   formOverlayPicture.style.transform = 'scale(1)';

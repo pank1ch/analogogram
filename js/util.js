@@ -7,7 +7,7 @@ function getRandomNumberInRange (min, max) {
 
 }
 
-function UniqueNumberGenerator (min, max) {
+function GetUniqueNumberGenerator (min, max) {
   const usedNumbers = [];
 
   return function(){
@@ -84,4 +84,4 @@ const showMessageBlock = (templateContent) => {
 };
 
 
-export {showAlert, showMessageBlock};
+export {showAlert, showMessageBlock, GetUniqueNumberGenerator};
