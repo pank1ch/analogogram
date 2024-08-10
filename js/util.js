@@ -28,6 +28,21 @@ function GetUniqueNumberGenerator (min, max) {
   };
 }
 
+
+function debounce (callback, timeoutDelay = 500) {
+
+  let timeoutId;
+
+  return (...rest) => {
+
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+
+  };
+}
+
+
 const showAlert = (message) => {
   const alertContainer = document.createElement('div');
   alertContainer.style.zIndex = '100';
@@ -84,4 +99,4 @@ const showMessageBlock = (templateContent) => {
 };
 
 
-export {showAlert, showMessageBlock, GetUniqueNumberGenerator};
+export {showAlert, showMessageBlock, GetUniqueNumberGenerator, debounce};

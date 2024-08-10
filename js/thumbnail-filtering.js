@@ -1,5 +1,5 @@
 import { ThumbnailsRendering } from './thumbnail-rendering.js';
-import {GetUniqueNumberGenerator} from './util.js';
+import {GetUniqueNumberGenerator, debounce} from './util.js';
 
 const imagesContainer = document.querySelector('.pictures');
 const imageFilters = document.querySelector('.img-filters');
@@ -65,7 +65,6 @@ const showRandomImages = () => {
     randomIdArray.push(newId);
   }
 
-  console.log(randomIdArray);
   const randomData = [];
 
   for (let i = 0; i < randomIdArray.length; i++){
@@ -93,20 +92,20 @@ const setActiveButton = (evt) => {
 };
 
 
-defaultButton.addEventListener('click', (evt) => {
+defaultButton.addEventListener('click', debounce((evt) => {
   setActiveButton(evt);
   showDefaultImages();
-});
+}));
 
-popularButton.addEventListener('click', (evt) => {
+popularButton.addEventListener('click', debounce((evt) => {
   setActiveButton(evt);
   showPopularImages();
-});
+}));
 
-randomButton.addEventListener('click', (evt) => {
+randomButton.addEventListener('click', debounce((evt) => {
   setActiveButton(evt);
   showRandomImages();
-});
+}));
 
 
 export {enableFilters};
